@@ -47,7 +47,7 @@
           "default": [
             {
               "name": "Localhost",
-              "description": "Lokalny serwer",
+              "description": "Local server",
               "host": "localhost",
               "port": 3306,
               "driver": "mysql",
@@ -56,23 +56,23 @@
               "password": ""
             }
           ],
-          "description": "Lista połączeń z serwerami baz danych MySQL / MariaDB (kliknij 'Add Item' aby dodać nowe połączenie).",
+          "description": "List of MySQL / MariaDB database server connections.",
           "items": {
             "type": "object",
             "required": ["name", "host", "port", "driver", "username"],
             "properties": {
               "name": {
                 "type": "string",
-                "description": "Nazwa połączenia"
+                "description": "Connection name"
               },
               "description": {
                 "type": "string",
-                "description": "Opis połączenia"
+                "description": "Connection description"
               },
               "host": {
                 "type": "string",
                 "default": "localhost",
-                "description": "Host serwera"
+                "description": "Server host"
               },
               "port": {
                 "type": "number",
@@ -83,22 +83,22 @@
                 "type": "string",
                 "default": "mysql",
                 "enum": ["mysql", "mariadb"],
-                "description": "Sterownik"
+                "description": "Database driver"
               },
               "database": {
                 "type": "string",
                 "default": "",
-                "description": "Baza(y) po przecinku (puste = wszystkie)"
+                "description": "Comma-separated databases (empty = all databases)"
               },
               "username": {
                 "type": "string",
                 "default": "root",
-                "description": "Użytkownik"
+                "description": "Database user name"
               },
               "password": {
                 "type": "string",
                 "default": "",
-                "description": "Hasło"
+                "description": "Database password"
               }
             }
           }
