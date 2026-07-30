@@ -60,3 +60,10 @@ Configure your database connections under **VS Code Settings** $\rightarrow$ **S
 * **`SQLer: Refresh Database Schema`** (`sqler.refreshSchema`): Reloads schema metadata across all configured servers and databases.
 * **`SQLer: Format SQL Query`** (`sqler.formatQuery`): Formats SQL statement with proper indentation and line breaks.
 * **`SQLer: Run SQL Query`** (`sqler.executeQuery`): Executes selected or active SQL query against configured database connection.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+

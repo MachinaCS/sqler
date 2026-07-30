@@ -3,6 +3,7 @@
   "displayName": "SQLer - Intelligent SQL Autocomplete for PHP",
   "description": "Intelligent SQL autocomplete, hover information, and diagnostics inside PHP string literals for MySQL/MariaDB",
   "version": "0.0.14",
+  "license": "MIT",
   "icon": "assets/sqler.png",
   "engines": {
     "vscode": "^1.85.0"
