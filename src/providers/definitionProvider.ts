@@ -36,12 +36,33 @@ export class SqlDefinitionProvider implements vscode.DefinitionProvider {
         const relativeOffset = offset - phpSql.startOffset;
         const parseResult = parseSql(phpSql.sqlText, relativeOffset, schema);
 
-        const resolvedTable = parseResult.aliases.get(rawWord) || rawWord;
-        const tableMeta = schema.tables.get(resolvedTable.toLowerCase());
+        let resolvedTable = parseResult.aliases.get(rawWord) || rawWord;
+        let tableMeta = schema.tables.get(resolvedTable.toLowerCase());
+
+        // If not directly a table/alias, search active tables in query for column matching rawWord
+        if (!tableMeta) {
+            for (const tableAlias of parseResult.tables) {
+                const tMeta = schema.tables.get(tableAlias.tableName.toLowerCase());
+                if (tMeta && tMeta.columns.has(rawWord.toLowerCase())) {
+                    tableMeta = tMeta;
+                    break;
+                }
+            }
+        }
+
+        // Global fallback: check any cached table containing this column or name
+        if (!tableMeta) {
+            for (const tMeta of schema.tables.values()) {
+                if (tMeta.name.toLowerCase() === rawWord.toLowerCase() || tMeta.columns.has(rawWord.toLowerCase())) {
+                    tableMeta = tMeta;
+                    break;
+                }
+            }
+        }
 
         if (tableMeta) {
-            const virtualUri = vscode.Uri.parse(`sqler-schema://${tableMeta.databaseName}/${tableMeta.name}.sql`);
-            return new vscode.Location(virtualUri, new vscode.Position(0, 0));
+            // Target active document PHP file or virtual location
+            return new vscode.Location(document.uri, position);
         }
 
         return undefined;
