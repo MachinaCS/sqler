@@ -1,5 +1,22 @@
-out
-dist
-node_modules
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript build output
+out/
+dist/
+*.tsbuildinfo
+
+# VS Code extension build & test artifacts
 .vscode-test/
 *.vsix
+.vsce
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+*.log
+todo.txt
+tests.php
