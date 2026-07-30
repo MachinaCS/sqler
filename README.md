@@ -10,7 +10,7 @@
 
 ## Key Features
 
-- **Multi-Server & Multi-Database Connections**: Configure multiple database connections natively in VS Code settings UI using `sqler.connections`.
+- **Multi-Server & Multi-Database Connections**: Configure multiple database connections inside your VS Code `settings.json` using `sqler.connections`.
 - **PHP AST SQL Detection**: Automatically detects SQL statements inside PHP string literals, heredocs, and nowdocs (`SELECT`, `INSERT`, `UPDATE`, `DELETE`, `REPLACE`, `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `WITH`).
 - **Context-Aware Completion & Priority Sorting**:
   - **Priority Sorting**: Columns & Aliases appear at the top, followed by Tables, MySQL Functions, and SQL Keywords at the bottom.
