@@ -105,27 +105,26 @@ export class SqlHoverProvider implements vscode.HoverProvider {
         md.appendCodeblock(`(column) ${tableName}.${col.name}: ${col.columnType}`, 'sql');
         md.appendMarkdown(`---\n`);
         
-        md.appendMarkdown(`| Attribute | Value |\n| --- | --- |\n`);
-        md.appendMarkdown(`| **Database** | \`${col.databaseName}\`${serverInfo ? ` _[${serverInfo}]_` : ''} |\n`);
-        md.appendMarkdown(`| **Table** | \`${tableName}\` |\n`);
-        md.appendMarkdown(`| **Data Type** | \`${col.columnType}\` |\n`);
-        md.appendMarkdown(`| **Nullable** | \`${col.isNullable ? 'YES' : 'NO'}\` |\n`);
+        md.appendMarkdown(`**Database**: \`${col.databaseName}\`${serverInfo ? ` _[${serverInfo}]_` : ''}\n\n`);
+        md.appendMarkdown(`**Table**: \`${tableName}\`  \n`);
+        md.appendMarkdown(`**Type**: \`${col.columnType}\`  \n`);
+        md.appendMarkdown(`**Nullable**: ${col.isNullable ? 'Yes' : 'No'}  \n`);
 
         let keyType = 'None';
         if (col.isPrimaryKey) keyType = 'Primary Key (PK)';
         else if (col.isForeignKey) keyType = 'Foreign Key (FK)';
-        md.appendMarkdown(`| **Key Constraint** | \`${keyType}\` |\n`);
+        md.appendMarkdown(`**Key**: \`${keyType}\`  \n`);
 
         if (col.isForeignKey && col.foreignKeyRef) {
-            md.appendMarkdown(`| **FK Reference** | \`${col.foreignKeyRef.targetTable}.${col.foreignKeyRef.targetColumn}\` |\n`);
+            md.appendMarkdown(`**References**: \`${col.foreignKeyRef.targetTable}.${col.foreignKeyRef.targetColumn}\`  \n`);
         }
 
         const defaultValStr = col.defaultValue !== null ? String(col.defaultValue) : 'NULL';
-        md.appendMarkdown(`| **Default Value** | \`${defaultValStr}\` |\n`);
+        md.appendMarkdown(`**Default**: \`${defaultValStr}\`  \n`);
 
         if (col.comment) {
             const cleanComment = String(col.comment).replace(/[\r\n]+/g, ' ');
-            md.appendMarkdown(`\n> **Comment**: _${cleanComment}_\n`);
+            md.appendMarkdown(`\n_${cleanComment}_\n`);
         }
 
         return md;
@@ -137,24 +136,13 @@ export class SqlHoverProvider implements vscode.HoverProvider {
         md.appendCodeblock(`(table) ${table.name}${aliasStr}: ${table.columns.size} columns`, 'sql');
         md.appendMarkdown(`---\n`);
         
-        md.appendMarkdown(`| Table Detail | Value |\n| --- | --- |\n`);
-        md.appendMarkdown(`| **Database** | \`${table.databaseName}\`${serverInfo ? ` _[${serverInfo}]_` : ''} |\n`);
-        md.appendMarkdown(`| **Total Columns** | \`${table.columns.size}\` |\n`);
-        md.appendMarkdown(`| **Primary Keys** | \`${table.primaryKeys.join(', ') || 'None'}\` |\n\n`);
-
-        md.appendMarkdown(`### Columns Schema\n\n`);
-        md.appendMarkdown(`| Column | Type | Nullable | Attributes | Comment |\n| --- | --- | --- | --- | --- |\n`);
+        md.appendMarkdown(`**Database**: \`${table.databaseName}\`${serverInfo ? ` _[${serverInfo}]_` : ''}\n\n`);
+        md.appendMarkdown(`**Primary Keys**: \`${table.primaryKeys.join(', ') || 'None'}\`\n\n`);
 
         for (const col of table.columns.values()) {
-            let attrStr = col.isPrimaryKey ? '`PK`' : (col.isForeignKey ? '`FK`' : '`-`');
-            if (col.isForeignKey && col.foreignKeyRef) {
-                attrStr += ` \`-> ${col.foreignKeyRef.targetTable}.${col.foreignKeyRef.targetColumn}\``;
-            }
-
-            const commentClean = col.comment
-                ? String(col.comment).replace(/[\r\n]+/g, ' ').replace(/\|/g, '\\|')
-                : '';
-            md.appendMarkdown(`| \`${col.name}\` | \`${col.dataType}\` | \`${col.isNullable ? 'YES' : 'NO'}\` | ${attrStr} | ${commentClean} |\n`);
+            let extra = col.isPrimaryKey ? ' `PK`' : (col.isForeignKey ? ` \`FK -> ${col.foreignKeyRef?.targetTable}.${col.foreignKeyRef?.targetColumn}\`` : '');
+            let commentStr = col.comment ? ` — _${String(col.comment).replace(/[\r\n]+/g, ' ')}_` : '';
+            md.appendMarkdown(`- \`${col.name}\`: \`${col.dataType}\`${extra}${commentStr}\n`);
         }
         return md;
     }
