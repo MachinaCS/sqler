@@ -4,9 +4,17 @@ import { SqlHoverProvider } from './providers/hoverProvider';
 import { SqlDiagnosticManager } from './providers/diagnosticProvider';
 import { refreshDatabaseSchemaCommand, getDbConfig } from './commands/refreshSchema';
 import { schemaCacheManager } from './cache/schemaCache';
+import { SqlDefinitionProvider, SqlTextDocumentContentProvider } from './providers/definitionProvider';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('SQLer extension is active.');
+
+    // Register Virtual Schema Document Content Provider
+    const schemaContentProvider = vscode.workspace.registerTextDocumentContentProvider(
+        'sqler-schema',
+        new SqlTextDocumentContentProvider()
+    );
+    context.subscriptions.push(schemaContentProvider);
 
     const diagnosticManager = new SqlDiagnosticManager();
     context.subscriptions.push(diagnosticManager);

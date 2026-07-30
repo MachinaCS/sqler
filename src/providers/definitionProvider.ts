@@ -3,6 +3,44 @@ import { getPhpSqlStringAtOffset } from '../utils/phpAst';
 import { parseSql } from '../parser/parser';
 import { schemaCacheManager } from '../cache/schemaCache';
 
+export class SqlTextDocumentContentProvider implements vscode.TextDocumentContentProvider {
+    public provideTextDocumentContent(uri: vscode.Uri): string {
+        const schema = schemaCacheManager.getCache();
+        const tableName = uri.path.replace(/^\//, '').replace(/\.sql$/, '');
+        const tableMeta = schema.tables.get(tableName.toLowerCase());
+
+        if (!tableMeta) {
+            return `-- Table ${tableName} schema not found in cache.`;
+        }
+
+        let sql = `-- Virtual Schema Definition for table \`${tableMeta.name}\`\n`;
+        sql += `-- Database: ${tableMeta.databaseName} | Server: ${tableMeta.serverName}\n\n`;
+        sql += `CREATE TABLE \`${tableMeta.name}\` (\n`;
+
+        const colLines: string[] = [];
+        for (const col of tableMeta.columns.values()) {
+            let colLine = `  \`${col.name}\` ${col.columnType}`;
+            if (!col.isNullable) colLine += ' NOT NULL';
+            if (col.defaultValue !== null) colLine += ` DEFAULT '${col.defaultValue}'`;
+            if (col.comment) colLine += ` COMMENT '${col.comment}'`;
+            colLines.push(colLine);
+        }
+
+        if (tableMeta.primaryKeys.length > 0) {
+            colLines.push(`  PRIMARY KEY (\`${tableMeta.primaryKeys.join('`, `')}\`)`);
+        }
+
+        for (const fk of tableMeta.foreignKeys) {
+            colLines.push(`  CONSTRAINT \`${fk.constraintName}\` FOREIGN KEY (\`${fk.columnName}\`) REFERENCES \`${fk.referencedTableName}\` (\`${fk.referencedColumnName}\`)`);
+        }
+
+        sql += colLines.join(',\n');
+        sql += `\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n`;
+
+        return sql;
+    }
+}
+
 export class SqlDefinitionProvider implements vscode.DefinitionProvider {
     public async provideDefinition(
         document: vscode.TextDocument,
@@ -59,12 +97,12 @@ export class SqlDefinitionProvider implements vscode.DefinitionProvider {
         }
 
         if (tableMeta) {
-            // Return target location as a LocationLink pointing to current range
+            const virtualUri = vscode.Uri.parse(`sqler-schema://${tableMeta.databaseName}/${tableMeta.name}.sql`);
             return [
                 {
                     originSelectionRange: wordRange,
-                    targetUri: document.uri,
-                    targetRange: wordRange
+                    targetUri: virtualUri,
+                    targetRange: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0))
                 }
             ];
         }
