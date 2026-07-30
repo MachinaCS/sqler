@@ -19,14 +19,14 @@ export class SqlCodeLensProvider implements vscode.CodeLensProvider {
             const lineRange = new vscode.Range(startPos, startPos);
 
             const lens = new vscode.CodeLens(lineRange, {
-                title: '▶ Run SQL Query',
+                title: 'Run SQL Query',
                 command: 'sqler.executeQuery',
                 arguments: [phpSql.sqlText]
             });
             codeLenses.push(lens);
 
             const fmtLens = new vscode.CodeLens(lineRange, {
-                title: '✨ Format SQL',
+                title: 'Format SQL',
                 command: 'sqler.formatQuery',
                 arguments: []
             });

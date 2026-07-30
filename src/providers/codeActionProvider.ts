@@ -76,7 +76,7 @@ export class SqlCodeActionProvider implements vscode.CodeActionProvider {
 
                 if (bestMatch) {
                     const action = new vscode.CodeAction(
-                        `💡 Change '${invalidTable}' to '${bestMatch}'`,
+                        `Change '${invalidTable}' to '${bestMatch}'`,
                         vscode.CodeActionKind.QuickFix
                     );
                     action.diagnostics = [diagnostic];
@@ -97,7 +97,7 @@ export class SqlCodeActionProvider implements vscode.CodeActionProvider {
 
                 if (bestMatch) {
                     const action = new vscode.CodeAction(
-                        `💡 Change '${invalidCol}' to '${bestMatch}'`,
+                        `Change '${invalidCol}' to '${bestMatch}'`,
                         vscode.CodeActionKind.QuickFix
                     );
                     action.diagnostics = [diagnostic];
