@@ -39,7 +39,6 @@ export class SqlDefinitionProvider implements vscode.DefinitionProvider {
         let resolvedTable = parseResult.aliases.get(rawWord) || rawWord;
         let tableMeta = schema.tables.get(resolvedTable.toLowerCase());
 
-        // If not directly a table/alias, search active tables in query for column matching rawWord
         if (!tableMeta) {
             for (const tableAlias of parseResult.tables) {
                 const tMeta = schema.tables.get(tableAlias.tableName.toLowerCase());
@@ -50,7 +49,6 @@ export class SqlDefinitionProvider implements vscode.DefinitionProvider {
             }
         }
 
-        // Global fallback: check any cached table containing this column or name
         if (!tableMeta) {
             for (const tMeta of schema.tables.values()) {
                 if (tMeta.name.toLowerCase() === rawWord.toLowerCase() || tMeta.columns.has(rawWord.toLowerCase())) {
@@ -61,8 +59,14 @@ export class SqlDefinitionProvider implements vscode.DefinitionProvider {
         }
 
         if (tableMeta) {
-            // Target active document PHP file or virtual location
-            return new vscode.Location(document.uri, position);
+            // Return target location as a LocationLink pointing to current range
+            return [
+                {
+                    originSelectionRange: wordRange,
+                    targetUri: document.uri,
+                    targetRange: wordRange
+                }
+            ];
         }
 
         return undefined;
