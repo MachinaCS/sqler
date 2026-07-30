@@ -5,6 +5,10 @@
   "version": "0.0.14",
   "license": "MIT",
   "icon": "assets/sqler.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MachinaCS/sqler.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
