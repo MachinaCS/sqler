@@ -1,0 +1,128 @@
+{
+  "name": "sqler",
+  "displayName": "SQLer - Intelligent SQL Autocomplete for PHP",
+  "description": "Intelligent SQL autocomplete, hover information, and diagnostics inside PHP string literals for MySQL/MariaDB",
+  "version": "0.0.14",
+  "icon": "assets/sqler.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:php"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqler.refreshSchema",
+        "title": "SQLer: Refresh Database Schema"
+      },
+      {
+        "command": "sqler.formatQuery",
+        "title": "SQLer: Format SQL Query"
+      },
+      {
+        "command": "sqler.executeQuery",
+        "title": "SQLer: Run SQL Query"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "SQLer Database Settings",
+      "properties": {
+        "sqler.combineSameColumns": {
+          "type": "boolean",
+          "default": false,
+          "description": "When enabled, columns sharing the exact same name across active tables in a SELECT query will be combined into a single suggestion detailing all matching tables."
+        },
+        "sqler.connections": {
+          "type": "array",
+          "scope": "resource",
+          "default": [
+            {
+              "name": "Localhost",
+              "description": "Lokalny serwer",
+              "host": "localhost",
+              "port": 3306,
+              "driver": "mysql",
+              "database": "",
+              "username": "root",
+              "password": ""
+            }
+          ],
+          "description": "Lista połączeń z serwerami baz danych MySQL / MariaDB (kliknij 'Add Item' aby dodać nowe połączenie).",
+          "items": {
+            "type": "object",
+            "required": ["name", "host", "port", "driver", "username"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Nazwa połączenia"
+              },
+              "description": {
+                "type": "string",
+                "description": "Opis połączenia"
+              },
+              "host": {
+                "type": "string",
+                "default": "localhost",
+                "description": "Host serwera"
+              },
+              "port": {
+                "type": "number",
+                "default": 3306,
+                "description": "Port"
+              },
+              "driver": {
+                "type": "string",
+                "default": "mysql",
+                "enum": ["mysql", "mariadb"],
+                "description": "Sterownik"
+              },
+              "database": {
+                "type": "string",
+                "default": "",
+                "description": "Baza(y) po przecinku (puste = wszystkie)"
+              },
+              "username": {
+                "type": "string",
+                "default": "root",
+                "description": "Użytkownik"
+              },
+              "password": {
+                "type": "string",
+                "default": "",
+                "description": "Hasło"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "mysql2": "^3.9.0"
+  }
+}
