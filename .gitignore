@@ -7,6 +7,8 @@ yarn-error.log*
 # TypeScript build output
 out/
 dist/
+builds/
+build/
 *.tsbuildinfo
 
 # VS Code extension build & test artifacts
